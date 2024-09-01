@@ -1,10 +1,12 @@
 public class Main {
     public static void main(String[] args) {
         Mascota brenda = new Mascota(10, 5);
-        Mascota gonza = new Mascota(5, 10);
-        gonza.presentacion();
-        gonza.fatality();
-        gonza.presentacion();
+        brenda.saltar();
+        brenda.saltar();
+        brenda.saltar();
+        brenda.saltar();
+        brenda.saltar();
+        brenda.presentacion();
     }
 }
 //Brenda no corre nada sabes!

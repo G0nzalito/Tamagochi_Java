@@ -4,6 +4,7 @@ public class Mascota {
     private boolean dormido;
     private int saciedad;
     public boolean vivo;
+    public int cansancio;
 
     public Mascota(int energia, int humor) {
         if (validarEnergia(energia)) {
@@ -18,14 +19,14 @@ public class Mascota {
         }
         this.dormido = false;
         this.vivo = true;
-    };
+    }
 
     private boolean validarEnergia(int energia){
         return energia > 0 && energia <= 100;
-    };
+    }
     private boolean validarHumor(int humor){
         return humor > 0 && humor <= 5;
-    };
+    }
 
     private void morir(){
         this.vivo=false;
@@ -41,6 +42,10 @@ public class Mascota {
             int energiaAumentada = (int) (energia * 1.10);
             energia = Math.min(energiaAumentada, 100);
             saciedad++;
+            if (saciedad == 5){
+                this.vivo = false;
+                return;
+            }
             if(saciedad >= 3 && humor != 0){
                 this.humor--;
             }else {
@@ -48,9 +53,9 @@ public class Mascota {
                     humor += 1;
                 }
             }
-            ;
+
         }
-    };
+    }
 
     public void beber() {
         if (this.energia == 0){
@@ -60,14 +65,21 @@ public class Mascota {
             int energiaAumentada = (int) ((double) energia * 1.05);
             energia = Math.min(energiaAumentada, 100);
             saciedad++;
+            if (saciedad == 5){
+                this.vivo = false;
+                return;
+            }
             if(saciedad >= 3 && humor != 0) {
                 this.humor--;
             }
             if (humor != 5) {
                 humor += 1;
-        };
+            }
+            if (humor == 0){
+                dormir();
+            }
         }
-    };
+    }
 
     //Metodos de actividades
 
@@ -77,24 +89,22 @@ public class Mascota {
         }
         if (!this.dormido && this.vivo) {
             energia = (int) ((double) energia * 0.65);
-            if (humor > 1) {
+            this.cansancio++;
+            if (this.humor > 1) {
                 humor -= 2;
             }else {
                 humor = 0;
+                dormir();
             }
             if (saciedad > 0){
                 saciedad = 0;
             }
+            if (cansancio == 3){
+                System.out.println("Me cansé, me voy a dormir");
+                dormir();
+            }
         }
-    };
-    public void atacar(){
-         energia -= 1;
-    };
-
-    public void fatality(){
-        vivo = false;
-        energia -= 5;
-    };
+    }
 
 
     public void saltar(){
@@ -103,16 +113,23 @@ public class Mascota {
         }
         if (!this.dormido && this.vivo) {
             energia = (int) ((double) energia * 0.85);
+            cansancio++;
             if (humor > 1) {
                 humor -= 2;
             }else {
                 humor = 0;
+                dormir();
             }
             if (saciedad > 0){
                 saciedad = 0;
             }
+            if (cansancio == 3){
+                System.out.println("Me cansé, me voy a dormir");
+                dormir();
+            }
+
        }
-    };
+    }
 
     //Metodos extra
 
@@ -120,22 +137,20 @@ public class Mascota {
         if (this.vivo) {
             this.dormido = true;
             energia = Math.min((energia + 25), 100);
+            saciedad = 0;
+            cansancio = 0;
             if (humor != 5) {
                 humor += 2;
             }
-
-            if (saciedad > 0) {
-                saciedad = 0;
-            }
         }
-    };
+    }
 
     public void despertar(){
         if (this.vivo) {
             this.dormido = false;
             this.humor -= 1;
         }
-    };
+    }
 
 
     private String asignarHumor(){

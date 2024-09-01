@@ -1,14 +1,15 @@
 public class Mascota {
     private int energia;
-    private int humor;
+    public int humor;
     private boolean dormido;
     private int saciedad;
+    public boolean vivo;
 
     public Mascota(int energia, int humor) {
         if (validarEnergia(energia)) {
             this.energia = energia;
         }else {
-            this.energia = 0;
+            this.energia = 10;
         }
         if (validarHumor(humor)) {
             this.humor = humor;
@@ -16,6 +17,7 @@ public class Mascota {
             this.humor = 0;
         }
         this.dormido = false;
+        this.vivo = true;
     };
 
     private boolean validarEnergia(int energia){
@@ -25,9 +27,17 @@ public class Mascota {
         return humor > 0 && humor <= 5;
     };
 
+    private void morir(){
+        this.vivo=false;
+    }
+
     //Metodos de ingesta
     public void comer(){
-        if (!this.dormido) {
+        if (this.energia == 0){
+            morir();
+        }
+
+        if (!this.dormido && this.vivo) {
             int energiaAumentada = (int) (energia * 1.10);
             energia = Math.min(energiaAumentada, 100);
             saciedad++;
@@ -43,7 +53,10 @@ public class Mascota {
     };
 
     public void beber() {
-        if (!this.dormido) {
+        if (this.energia == 0){
+            morir();
+        }
+        if (!this.dormido && this.vivo) {
             int energiaAumentada = (int) ((double) energia * 1.05);
             energia = Math.min(energiaAumentada, 100);
             saciedad++;
@@ -59,23 +72,42 @@ public class Mascota {
     //Metodos de actividades
 
     public void correr(){
-        if (!this.dormido) {
+        if (energia ==0){
+            morir();
+        }
+        if (!this.dormido && this.vivo) {
             energia = (int) ((double) energia * 0.65);
-            if (humor != 0) {
+            if (humor > 1) {
                 humor -= 2;
+            }else {
+                humor = 0;
             }
             if (saciedad > 0){
                 saciedad = 0;
             }
         }
     };
+    public void atacar(){
+         energia -= 1;
+    };
+
+    public void fatality(){
+        vivo = false;
+        energia -= 5;
+    };
+
 
     public void saltar(){
-        if (!this.dormido) {
-            energia = (int) ((double) energia * 0.85);
-            if (humor != 0) {
-                humor -= 2;
+        if (this.energia == 0){
+            morir();
         }
+        if (!this.dormido && this.vivo) {
+            energia = (int) ((double) energia * 0.85);
+            if (humor > 1) {
+                humor -= 2;
+            }else {
+                humor = 0;
+            }
             if (saciedad > 0){
                 saciedad = 0;
             }
@@ -85,26 +117,26 @@ public class Mascota {
     //Metodos extra
 
     public void dormir(){
-        this.dormido = true;
-        energia = Math.min((energia + 25), 100);
-        if(humor != 5){
-          humor += 2;
-        }
-        if (saciedad > 0){
-            saciedad = 0;
+        if (this.vivo) {
+            this.dormido = true;
+            energia = Math.min((energia + 25), 100);
+            if (humor != 5) {
+                humor += 2;
+            }
+
+            if (saciedad > 0) {
+                saciedad = 0;
+            }
         }
     };
 
     public void despertar(){
-        this.dormido = false;
-        this.humor -= 1;
+        if (this.vivo) {
+            this.dormido = false;
+            this.humor -= 1;
+        }
     };
 
-    public void presentacion(){
-        String humor = asignarHumor();
-        System.out.println("Hola, soy tu mascota, un gusto conocerte, tengo " + this.energia + " de energia y hoy estoy "
-                + humor  );
-    }
 
     private String asignarHumor(){
         String[] humores = new String[5];
@@ -119,6 +151,12 @@ public class Mascota {
         }else {
             return humores[0];
         }
+    }
+
+    public void presentacion(){
+        String humor = asignarHumor();
+        System.out.println("Hola, soy tu mascota, un gusto conocerte, tengo " + this.energia + " de energia y hoy estoy "
+                + humor + "¿Estoy vivo? " + this.vivo );
     }
 
 }
